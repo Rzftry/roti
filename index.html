@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Roti Fleksibel</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    padding: 15px;
+    color: #333;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  h1 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 1.4rem;
+  }
+
+  .subtitle {
+    color: #7f8c8d;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .calculator {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+
+  .calculator h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .input-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .input-item label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .input-field {
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    background-color: #fff;
+    width: 100%;
+  }
+
+  .input-field:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  }
+
+  .input-field.readonly {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    cursor: default;
+    border-color: #d0d0d0;
+    font-weight: 600;
+  }
+
+  .input-field.input-active {
+    border-color: #27ae60;
+    background-color: #f8fff9;
+  }
+
+  .input-field.result {
+    color: #e74c3c;
+    font-weight: 700;
+    border-color: #e74c3c;
+    background-color: #fff9f9;
+  }
+
+  .unit {
+    color: #95a5a6;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .info-box {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    margin-top: 15px;
+  }
+
+  .info-box p {
+    font-size: 0.8rem;
+    color: #555;
+    margin: 0;
+  }
+
+  .note {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    text-align: center;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 0 8px rgba(0,0,0,0.08);
+    background: white;
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.8rem;
+  }
+
+  th, td {
+    border: 1px solid #e0e0e0;
+    padding: 8px 10px;
+    text-align: center;
+  }
+
+  th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  /* Highlight untuk baris qty 10, 20, 30, etc */
+  tr[data-qty="10"],
+  tr[data-qty="20"],
+  tr[data-qty="30"],
+  tr[data-qty="40"],
+  tr[data-qty="50"],
+  tr[data-qty="60"],
+  tr[data-qty="70"],
+  tr[data-qty="80"],
+  tr[data-qty="90"],
+  tr[data-qty="100"] {
+    background: #e74c3c;
+    color: white;
+    font-weight: 600;
+  }
+
+  tr.separator td {
+    border: none;
+    border-bottom: 2px solid #bdc3c7;
+    height: 4px;
+    padding: 0;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 480px) {
+    .container {
+      padding: 10px;
+    }
+    
+    .calculator {
+      padding: 15px;
+    }
+    
+    .input-field {
+      padding: 8px 10px;
+    }
+  }
+
+  .input-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .input-header span {
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    font-weight: normal;
+  }
+
+  .warning {
+    color: #e74c3c;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Kalkulator & Jadual Roti Fleksibel</h1>
+      <p class="subtitle">1 batang = 3 potong, 1 pack = 5 potong</p>
+    </header>
+
+    <div class="calculator">
+      <h2>Kalkulator Roti (Input Fleksibel)</h2>
+      
+      <div class="input-grid">
+        <!-- Baris 1: Batang Roti -->
+        <div class="input-item">
+          <div class="input-header">
+            <label for="bread-sticks">Batang Roti</label>
+            <span>Input</span>
+          </div>
+          <input type="number" id="bread-sticks" class="input-field input-active" 
+                 min="1" max="1000" value="4" placeholder="Masukkan batang">
+          <div class="unit">1 batang = 3 potong</div>
+        </div>
+        
+        <!-- Baris 2: Potongan -->
+        <div class="input-item">
+          <div class="input-header">
+            <label for="pieces">Jumlah Potongan</label>
+            <span>Input</span>
+          </div>
+          <input type="number" id="pieces" class="input-field" 
+                 min="1" max="3000" value="12" placeholder="Masukkan potong">
+          <div class="unit">Boleh masukkan apa-apa nombor (contoh: 15, 150)</div>
+        </div>
+        
+        <!-- Baris 3: Pack -->
+        <div class="input-item">
+          <div class="input-header">
+            <label for="packs">Jumlah Pack</label>
+            <span>Input</span>
+          </div>
+          <input type="number" id="packs" class="input-field" 
+                 min="1" max="600" value="2" placeholder="Masukkan pack">
+          <div class="unit">1 pack = 5 potong</div>
+        </div>
+        
+        <!-- Baris 4: Balance -->
+        <div class="input-item">
+          <div class="input-header">
+            <label for="balance">Baki Potongan</label>
+            <span>Output</span>
+          </div>
+          <input type="text" id="balance" class="input-field readonly result" 
+                 readonly value="2">
+          <div class="unit">Baki selepas buat pack</div>
+        </div>
+      </div>
+      
+      <div class="info-box">
+        <p><strong>Cara guna:</strong> Masukkan salah satu nilai (batang ATAU potong ATAU pack), nilai lain akan dikira automatik. Balance sentiasa output sahaja.</p>
+        <p><strong>Nota:</strong> Boleh masukkan apa-apa nombor untuk "Potongan" (contoh: 15, 28, 150). Batang akan dikira secara automatik (mungkin jadi perpuluhan).</p>
+      </div>
+    </div>
+
+    <h2 style="text-align: center; margin: 20px 0 10px; font-size: 1.1rem; color: #2c3e50;">Jadual Pengiraan Roti</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Plastik</th>
+          <th>Qty</th>
+          <th>Pack</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td rowspan="2">1</td><td>8</td><td>4</td><td>4</td></tr>
+        <tr data-qty="10"><td>10</td><td>6</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">2</td><td>16</td><td>9</td><td>3</td></tr>
+        <tr data-qty="20"><td>20</td><td>12</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">3</td><td>24</td><td>14</td><td>2</td></tr>
+        <tr data-qty="30"><td>30</td><td>18</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">4</td><td>32</td><td>19</td><td>1</td></tr>
+        <tr data-qty="40"><td>40</td><td>24</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">5</td><td>40</td><td>24</td><td>0</td></tr>
+        <tr data-qty="50"><td>50</td><td>30</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">6</td><td>48</td><td>29</td><td>3</td></tr>
+        <tr data-qty="60"><td>60</td><td>36</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">7</td><td>56</td><td>34</td><td>2</td></tr>
+        <tr data-qty="70"><td>70</td><td>42</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">8</td><td>64</td><td>39</td><td>1</td></tr>
+        <tr data-qty="80"><td>80</td><td>48</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">9</td><td>72</td><td>44</td><td>4</td></tr>
+        <tr data-qty="90"><td>90</td><td>54</td><td>0</td></tr>
+        <tr class="separator"><td colspan="4"></td></tr>
+
+        <tr><td rowspan="2">10</td><td>80</td><td>49</td><td>3</td></tr>
+        <tr data-qty="100"><td>100</td><td>60</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Ambil semua elemen input
+    const breadSticksInput = document.getElementById('bread-sticks');
+    const piecesInput = document.getElementById('pieces');
+    const packsInput = document.getElementById('packs');
+    const balanceInput = document.getElementById('balance');
+    
+    // Simpan input yang sedang aktif
+    let activeInput = 'bread-sticks';
+    
+    // Fungsi untuk reset semua border
+    function resetBorders() {
+      breadSticksInput.classList.remove('input-active');
+      piecesInput.classList.remove('input-active');
+      packsInput.classList.remove('input-active');
+    }
+    
+    // Fungsi untuk set input aktif
+    function setActiveInput(inputElement, inputName) {
+      resetBorders();
+      inputElement.classList.add('input-active');
+      activeInput = inputName;
+    }
+    
+    // Fungsi untuk mengira dari BATANG
+    function calculateFromBread() {
+      const bread = parseFloat(breadSticksInput.value);
+      if (isNaN(bread) || bread < 1) {
+        breadSticksInput.value = 1;
+        calculateFromBread();
+        return;
+      }
+      
+      const pieces = bread * 3;
+      const packs = Math.floor(pieces / 5);
+      const balance = pieces % 5;
+      
+      piecesInput.value = pieces.toFixed(1);
+      packsInput.value = packs;
+      balanceInput.value = balance.toFixed(1);
+    }
+    
+    // Fungsi untuk mengira dari POTONG (BOLEH MASUK APA-APA NOMBOR)
+    function calculateFromPieces() {
+      let pieces = parseFloat(piecesInput.value);
+      if (isNaN(pieces) || pieces < 1) {
+        piecesInput.value = 1;
+        calculateFromPieces();
+        return;
+      }
+      
+      // BOLEH MASUK APA-APA NOMBOR - tidak perlu gandaan 3
+      const bread = pieces / 3;
+      const packs = Math.floor(pieces / 5);
+      const balance = pieces % 5;
+      
+      breadSticksInput.value = bread.toFixed(2);
+      packsInput.value = packs;
+      balanceInput.value = balance.toFixed(1);
+    }
+    
+    // Fungsi untuk mengira dari PACK
+    function calculateFromPacks() {
+      const packs = parseInt(packsInput.value);
+      if (isNaN(packs) || packs < 1) {
+        packsInput.value = 1;
+        calculateFromPacks();
+        return;
+      }
+      
+      // Minimum pieces yang diperlukan
+      const minPieces = packs * 5;
+      
+      // Cari bilangan batang yang cukup
+      let bread = Math.ceil(minPieces / 3);
+      let pieces = bread * 3;
+      
+      // Tambah sehingga balance = 0 jika boleh
+      while (pieces % 5 !== 0 && bread < 1000) {
+        bread++;
+        pieces = bread * 3;
+      }
+      
+      // Jika dah sampai 1000 batang dan masih tak jumpa balance 0, berhenti
+      if (bread >= 1000) {
+        bread = Math.ceil(minPieces / 3);
+        pieces = bread * 3;
+      }
+      
+      const balance = pieces % 5;
+      
+      breadSticksInput.value = bread;
+      piecesInput.value = pieces;
+      balanceInput.value = balance;
+    }
+    
+    // Event listeners untuk focus
+    breadSticksInput.addEventListener('focus', () => {
+      setActiveInput(breadSticksInput, 'bread-sticks');
+    });
+    
+    piecesInput.addEventListener('focus', () => {
+      setActiveInput(piecesInput, 'pieces');
+    });
+    
+    packsInput.addEventListener('focus', () => {
+      setActiveInput(packsInput, 'packs');
+    });
+    
+    // Event listeners untuk input (realtime)
+    breadSticksInput.addEventListener('input', () => {
+      if (breadSticksInput.value === '' || breadSticksInput.value === '-') return;
+      calculateFromBread();
+    });
+    
+    piecesInput.addEventListener('input', () => {
+      if (piecesInput.value === '' || piecesInput.value === '-') return;
+      calculateFromPieces();
+    });
+    
+    packsInput.addEventListener('input', () => {
+      if (packsInput.value === '' || packsInput.value === '-') return;
+      calculateFromPacks();
+    });
+    
+    // Event listeners untuk change (apabila tekan enter atau keluar dari field)
+    breadSticksInput.addEventListener('change', () => {
+      if (breadSticksInput.value === '') breadSticksInput.value = 1;
+      calculateFromBread();
+    });
+    
+    piecesInput.addEventListener('change', () => {
+      if (piecesInput.value === '') piecesInput.value = 1;
+      calculateFromPieces();
+    });
+    
+    packsInput.addEventListener('change', () => {
+      if (packsInput.value === '') packsInput.value = 1;
+      calculateFromPacks();
+    });
+    
+    // Keydown untuk arrow keys
+    breadSticksInput.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        setTimeout(calculateFromBread, 10);
+      }
+    });
+    
+    piecesInput.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        setTimeout(calculateFromPieces, 10);
+      }
+    });
+    
+    packsInput.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        setTimeout(calculateFromPacks, 10);
+      }
+    });
+    
+    // Initialize
+    calculateFromBread();
+    setActiveInput(breadSticksInput, 'bread-sticks');
+    
+    // Contoh: Test dengan 15 potong
+    setTimeout(() => {
+      // Uncomment baris bawah untuk test automatik
+      // piecesInput.value = 15;
+      // calculateFromPieces();
+      // setActiveInput(piecesInput, 'pieces');
+    }, 500);
+  </script>
+</body>
+</html>
