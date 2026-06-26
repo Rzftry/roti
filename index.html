@@ -1,780 +1,687 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BreadFlex Pro - Kalkulator Roti Pintar</title>
-<style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --secondary: #8b5cf6;
-    --success: #10b981;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --dark: #1f2937;
-    --light: #f8fafc;
-    --gray: #6b7280;
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --glass: rgba(255, 255, 255, 0.1);
-    --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  }
-  
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 20px;
-    color: var(--dark);
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Roti Garlic + Kos & Untung</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-  }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #f7f3e9 0%, #fff8ed 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-  .header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 25px;
-    background: var(--card-bg);
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
+        .container {
+            max-width: 750px;
+            width: 100%;
+        }
 
-  .logo {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    color: var(--primary);
-  }
+        .card {
+            background: rgba(255, 248, 235, 0.85);
+            backdrop-filter: blur(6px);
+            border-radius: 48px;
+            padding: 35px 30px 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0e2d0;
+            margin-bottom: 20px;
+        }
 
-  h1 {
-    color: var(--dark);
-    margin-bottom: 10px;
-    font-size: 1.8rem;
-    font-weight: 700;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4b3a2b;
+            text-align: center;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-  .subtitle {
-    color: var(--gray);
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-  }
+        h1 small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #8b7355;
+            background: #ede3d4;
+            padding: 4px 16px;
+            border-radius: 40px;
+        }
 
-  .calculator-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-    margin-bottom: 30px;
-  }
+        .subhead {
+            text-align: center;
+            color: #7d6b56;
+            font-size: 0.9rem;
+            border-bottom: 2px dashed #dccfc0;
+            padding-bottom: 14px;
+            margin-bottom: 22px;
+        }
 
-  @media (max-width: 768px) {
-    .calculator-container {
-      grid-template-columns: 1fr;
-    }
-  }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
 
-  .input-panel, .output-panel {
-    background: var(--card-bg);
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
+        .kotak {
+            background: white;
+            border-radius: 24px;
+            padding: 14px 8px 16px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02), 0 6px 12px rgba(180, 140, 100, 0.08);
+            border: 1px solid #e9dbcb;
+            text-align: center;
+            transition: 0.2s;
+        }
 
-  .panel-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 25px;
-    color: var(--dark);
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
+        .kotak:focus-within {
+            border-color: #b3927a;
+            box-shadow: 0 0 0 4px rgba(179, 146, 122, 0.15);
+        }
 
-  .panel-title i {
-    font-size: 1.5rem;
-    color: var(--primary);
-  }
+        .kotak label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #6b5a48;
+            margin-bottom: 8px;
+        }
 
-  .input-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+        .kotak input {
+            width: 100%;
+            padding: 10px 4px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: #3d2e1e;
+            outline: none;
+            font-family: inherit;
+        }
 
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+        .kotak input[type="number"]::-webkit-inner-spin-button,
+        .kotak input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .kotak input[type="number"] {
+            -moz-appearance: textfield;
+        }
 
-  .input-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+        .kotak .unit {
+            font-size: 0.7rem;
+            color: #a28b74;
+            margin-top: 2px;
+            font-weight: 500;
+        }
 
-  .input-label {
-    font-weight: 600;
-    color: var(--dark);
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+        .kotak.highlight {
+            background: #fcf7f0;
+            border-color: #d5bea8;
+        }
+        .kotak.output {
+            background: #f4ede4;
+            border-color: #cfbca9;
+        }
+        .kotak.output input {
+            color: #5b462f;
+        }
 
-  .input-tag {
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
+        .info-bar {
+            background: #e8dbce;
+            border-radius: 60px;
+            padding: 12px 18px;
+            margin: 12px 0 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px 12px;
+            font-size: 0.85rem;
+            color: #3e3227;
+        }
 
-  .tag-input {
-    background: var(--primary);
-    color: white;
-  }
+        .info-bar span {
+            font-weight: 600;
+            background: white;
+            padding: 2px 14px;
+            border-radius: 40px;
+            color: #4f3c2b;
+        }
 
-  .tag-output {
-    background: var(--success);
-    color: white;
-  }
+        .info-bar .badge {
+            background: #b3927a;
+            color: white;
+            padding: 3px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
 
-  .input-wrapper {
-    position: relative;
-  }
+        .reset-btn {
+            background: #e2d2c0;
+            border: none;
+            border-radius: 60px;
+            padding: 10px 20px;
+            font-weight: 600;
+            color: #4b3a2b;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 12px;
+            letter-spacing: 0.3px;
+            border: 1px solid #d2bfab;
+        }
 
-  .input-field {
-    width: 100%;
-    padding: 15px 20px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    background: white;
-    color: var(--dark);
-  }
+        .reset-btn:hover {
+            background: #d6c2ad;
+            transform: scale(0.98);
+        }
+        .reset-btn:active {
+            background: #cbb49b;
+        }
 
-  .input-field:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    transform: translateY(-2px);
-  }
+        .cost-section {
+            background: #f8f2e9;
+            border-radius: 32px;
+            padding: 22px 24px 26px;
+            border: 1px solid #e2d2c0;
+            margin-top: 6px;
+        }
 
-  .input-field.active {
-    border-color: var(--primary);
-    background: linear-gradient(to right, #f0f9ff, #fef7ff);
-  }
+        .cost-section h2 {
+            font-size: 1.2rem;
+            color: #4b3a2b;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-  .input-field.output {
-    background: linear-gradient(to right, #f0fdf4, #ecfdf5);
-    border-color: var(--success);
-    color: var(--dark);
-    font-weight: 600;
-  }
+        .cost-section h2 small {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #7d6b56;
+            background: #ede3d4;
+            padding: 2px 14px;
+            border-radius: 40px;
+        }
 
-  .input-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--gray);
-    font-size: 1.2rem;
-  }
+        .cost-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 18px;
+            margin-bottom: 16px;
+        }
 
-  .unit {
-    color: var(--gray);
-    font-size: 0.8rem;
-    font-weight: 500;
-    padding-left: 5px;
-  }
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid #e6d7c6;
+            font-size: 0.9rem;
+        }
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-top: 25px;
-  }
+        .cost-item .label {
+            color: #5b4a38;
+            font-weight: 500;
+        }
 
-  .stat-card {
-    background: var(--light);
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    border: 1px solid #e5e7eb;
-    transition: transform 0.3s ease;
-  }
+        .cost-item .value {
+            font-weight: 700;
+            color: #3d2e1e;
+        }
 
-  .stat-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary);
-  }
+        .cost-item .value input {
+            width: 70px;
+            padding: 4px 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid #dccfc0;
+            border-radius: 30px;
+            background: #fcf7f0;
+            color: #3d2e1e;
+            outline: none;
+        }
 
-  .stat-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 5px;
-  }
+        .cost-item .value input:focus {
+            border-color: #b3927a;
+            background: white;
+        }
 
-  .stat-label {
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 500;
-  }
+        /* Baris harga jualan */
+        .harga-jualan-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            background: white;
+            padding: 10px 18px;
+            border-radius: 60px;
+            border: 1px solid #d5bea8;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
 
-  .result-summary {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    padding: 20px;
-    border-radius: 15px;
-    margin-top: 25px;
-  }
+        .harga-jualan-row label {
+            font-weight: 600;
+            color: #4b3a2b;
+            font-size: 0.95rem;
+        }
 
-  .result-title {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin-bottom: 10px;
-  }
+        .harga-jualan-row input {
+            width: 100px;
+            padding: 6px 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            border: 1px solid #dccfc0;
+            border-radius: 30px;
+            background: #fcf7f0;
+            color: #3d2e1e;
+            outline: none;
+        }
 
-  .result-main {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-  }
+        .harga-jualan-row input:focus {
+            border-color: #b3927a;
+            background: white;
+        }
 
-  .result-sub {
-    font-size: 0.9rem;
-    opacity: 0.9;
-  }
+        .harga-jualan-row .hint {
+            font-size: 0.75rem;
+            color: #8b7355;
+        }
 
-  .table-container {
-    background: var(--card-bg);
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    overflow: hidden;
-  }
+        .total-cost-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-top: 6px;
+        }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  }
+        .total-card {
+            background: white;
+            border-radius: 24px;
+            padding: 14px 10px;
+            text-align: center;
+            border: 1px solid #e2d2c0;
+        }
 
-  thead {
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-  }
+        .total-card .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8b7355;
+            font-weight: 600;
+        }
 
-  th {
-    padding: 15px;
-    text-align: center;
-    color: white;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+        .total-card .angka {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #3d2e1e;
+            margin-top: 4px;
+        }
 
-  tbody tr {
-    border-bottom: 1px solid #e5e7eb;
-    transition: background 0.3s ease;
-  }
+        .total-card .angka.keuntungan {
+            color: #2a7a4a;
+        }
 
-  tbody tr:hover {
-    background: #f9fafb;
-  }
+        .total-card .angka.rugi {
+            color: #b34a4a;
+        }
 
-  td {
-    padding: 15px;
-    text-align: center;
-    font-weight: 500;
-    color: var(--dark);
-  }
+        .footnote {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #a48d78;
+            margin-top: 16px;
+            border-top: 1px solid #e2d3c2;
+            padding-top: 14px;
+        }
 
-  .highlight-row {
-    background: linear-gradient(90deg, #f0f9ff, #f0fdf4) !important;
-    font-weight: 600 !important;
-    border-left: 4px solid var(--success);
-  }
-
-  .footer {
-    text-align: center;
-    margin-top: 30px;
-    padding: 20px;
-    color: white;
-    font-size: 0.9rem;
-    opacity: 0.8;
-  }
-
-  .note-box {
-    background: var(--warning);
-    color: white;
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 20px;
-    font-size: 0.85rem;
-  }
-
-  .glow {
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-
-  @keyframes glow {
-    from {
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-    }
-    to {
-      box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
-    }
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 5px 10px;
-    background: var(--primary);
-    color: white;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    margin-left: 10px;
-  }
-
-  .conversion-info {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-top: 20px;
-  }
-
-  .conv-card {
-    background: var(--light);
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-  }
-
-  .conv-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary);
-  }
-
-  .conv-label {
-    font-size: 0.8rem;
-    color: var(--gray);
-  }
-</style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        @media (max-width: 550px) {
+            .grid-3 {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 8px;
+            }
+            .kotak input {
+                font-size: 1.2rem;
+                padding: 8px 2px;
+            }
+            .cost-grid {
+                grid-template-columns: 1fr;
+            }
+            .total-cost-box {
+                grid-template-columns: 1fr 1fr;
+            }
+            .card {
+                padding: 20px 14px 24px;
+            }
+            .cost-section {
+                padding: 16px 14px 20px;
+            }
+            h1 {
+                font-size: 1.6rem;
+            }
+            .harga-jualan-row {
+                flex-direction: column;
+                gap: 8px;
+                padding: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header glow">
-      <div class="logo">
-        <i class="fas fa-bread-slice"></i>
-      </div>
-      <h1>BreadFlex Pro - Kalkulator Roti Pintar</h1>
-      <p class="subtitle">Kiraan tepat dengan 1 titik perpuluhan • 1 batang = 3 potong • 1 pack = 5 potong</p>
+
+<div class="container">
+
+    <div class="card">
+        <h1>
+            🥖 Roti & Garlic
+            <small>auto calc</small>
+        </h1>
+        <div class="subhead">
+            🧄 1 batang → 3 potong &nbsp;|&nbsp; 1 pack = 5 ketul
+        </div>
+
+        <div class="grid-3">
+            <div class="kotak highlight">
+                <label for="batang">🥖 Bil. Batang</label>
+                <input type="number" id="batang" min="0" step="0.5" value="68">
+                <div class="unit">batang</div>
+            </div>
+            <div class="kotak output">
+                <label for="pack">📦 Pack (jual)</label>
+                <input type="number" id="pack" min="0" step="0.1" value="40.0">
+                <div class="unit">pack (5 ketul)</div>
+            </div>
+            <div class="kotak output">
+                <label for="potong">🔪 Potongan</label>
+                <input type="number" id="potong" min="0" step="0.1" value="200.0">
+                <div class="unit">ketul</div>
+            </div>
+        </div>
+
+        <div class="info-bar">
+            <span>🧄 1 batang = 3 potong</span>
+            <span class="badge">1 pack = 5 ketul</span>
+            <span>⚡ auto kira</span>
+        </div>
+
+        <button class="reset-btn" id="resetBtn">⟲ Set semula (default 40 pack)</button>
     </div>
 
-    <div class="calculator-container">
-      <div class="input-panel">
-        <div class="panel-title">
-          <i class="fas fa-calculator"></i>
-          <span>Input Nilai</span>
-          <span class="badge">Pilih Satu</span>
-        </div>
-        
-        <div class="input-grid">
-          <!-- Batang Roti -->
-          <div class="input-group">
-            <div class="input-header">
-              <div class="input-label">
-                <i class="fas fa-ruler-vertical"></i>
-                <span>Batang Roti</span>
-              </div>
-              <span class="input-tag tag-input">Input</span>
-            </div>
-            <div class="input-wrapper">
-              <input type="number" id="bread-sticks" class="input-field active" 
-                     min="1" max="1000" step="0.1" value="4" placeholder="Masukkan batang">
-              <div class="input-icon">
-                <i class="fas fa-edit"></i>
-              </div>
-            </div>
-            <div class="unit">1 batang = 3 potong roti</div>
-          </div>
-          
-          <!-- Potongan -->
-          <div class="input-group">
-            <div class="input-header">
-              <div class="input-label">
-                <i class="fas fa-cut"></i>
-                <span>Jumlah Potongan</span>
-              </div>
-              <span class="input-tag tag-input">Input</span>
-            </div>
-            <div class="input-wrapper">
-              <input type="number" id="pieces" class="input-field" 
-                     min="1" max="3000" value="12" placeholder="Masukkan potong">
-              <div class="input-icon">
-                <i class="fas fa-edit"></i>
-              </div>
-            </div>
-            <div class="unit">Boleh masukkan apa-apa nombor (contoh: 15, 28, 150)</div>
-          </div>
-          
-          <!-- Pack -->
-          <div class="input-group">
-            <div class="input-header">
-              <div class="input-label">
-                <i class="fas fa-box"></i>
-                <span>Jumlah Pack</span>
-              </div>
-              <span class="input-tag tag-input">Input</span>
-            </div>
-            <div class="input-wrapper">
-              <input type="number" id="packs" class="input-field" 
-                     min="1" max="600" value="2" placeholder="Masukkan pack">
-              <div class="input-icon">
-                <i class="fas fa-edit"></i>
-              </div>
-            </div>
-            <div class="unit">1 pack = 5 potong roti</div>
-          </div>
+    <div class="cost-section">
+        <h2>
+            💰 Kos & Untung
+            <small>untuk 40 pack (contoh)</small>
+        </h2>
+
+        <!-- BARIS HARGA JUALAN (boleh ubah) -->
+        <div class="harga-jualan-row">
+            <label for="hargaJualan">💵 Harga Jualan Seunit (pack):</label>
+            <input type="number" id="hargaJualan" min="0" step="0.01" value="4.50">
+            <span class="hint">RM / pack</span>
         </div>
 
-        <div class="conversion-info">
-          <div class="conv-card">
-            <div class="conv-value">1 × 3</div>
-            <div class="conv-label">Batang ke Potong</div>
-          </div>
-          <div class="conv-card">
-            <div class="conv-value">5 ÷ 3</div>
-            <div class="conv-label">Pack ke Batang</div>
-          </div>
-          <div class="conv-card">
-            <div class="conv-value">÷ 5</div>
-            <div class="conv-label">Potong ke Pack</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="output-panel">
-        <div class="panel-title">
-          <i class="fas fa-chart-bar"></i>
-          <span>Output & Statistik</span>
-        </div>
-        
-        <!-- Baki Potongan -->
-        <div class="input-group">
-          <div class="input-header">
-            <div class="input-label">
-              <i class="fas fa-balance-scale"></i>
-              <span>Baki Potongan</span>
+        <div class="cost-grid" id="costGrid">
+            <div class="cost-item">
+                <span class="label">🥛 Susu (kotak) <span style="font-weight:400;color:#8b7355;">x3</span></span>
+                <span class="value">
+                    RM <input type="number" id="hargaSusu" min="0" step="0.1" value="6.00">
+                </span>
             </div>
-            <span class="input-tag tag-output">Output</span>
-          </div>
-          <div class="input-wrapper">
-            <input type="text" id="balance" class="input-field output" 
-                   readonly value="2">
-            <div class="input-icon">
-              <i class="fas fa-check-circle"></i>
+            <div class="cost-item">
+                <span class="label">🍄 Mushroom (200g) <span style="font-weight:400;color:#8b7355;">x2</span></span>
+                <span class="value">
+                    RM <input type="number" id="hargaMushroom" min="0" step="0.1" value="5.00">
+                </span>
             </div>
-          </div>
-          <div class="unit">Baki selepas buat pack</div>
+            <div class="cost-item">
+                <span class="label">🧈 Butter <span style="font-weight:400;color:#8b7355;">x1</span></span>
+                <span class="value">
+                    RM <input type="number" id="hargaButter" min="0" step="0.1" value="6.00">
+                </span>
+            </div>
+            <div class="cost-item">
+                <span class="label">🥤 Cup + Box <span style="font-weight:400;color:#8b7355;">x40</span></span>
+                <span class="value">
+                    RM <input type="number" id="hargaCup" min="0" step="0.01" value="0.30">
+                </span>
+            </div>
+            <div class="cost-item">
+                <span class="label">🧅 Bawang Holland <span style="font-weight:400;color:#8b7355;">x2</span></span>
+                <span class="value">
+                    RM <input type="number" id="hargaBawang" min="0" step="0.1" value="1.00">
+                </span>
+            </div>
+            <div class="cost-item">
+                <span class="label">🥖 Roti (sebatang) <span style="font-weight:400;color:#8b7355;">x68</span></span>
+                <span class="value">
+                    RM <input type="number" id="hargaRoti" min="0" step="0.01" value="0.30">
+                </span>
+            </div>
         </div>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value" id="total-pieces">12</div>
-            <div class="stat-label">Total Potongan</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="total-packs">2</div>
-            <div class="stat-label">Total Pack</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="batang-value">4.0</div>
-            <div class="stat-label">Batang</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="efficiency">100%</div>
-            <div class="stat-label">Kecekapan</div>
-          </div>
+        <div class="total-cost-box">
+            <div class="total-card">
+                <div class="label">💸 Jumlah Kos</div>
+                <div class="angka" id="totalKos">RM 0.00</div>
+            </div>
+            <div class="total-card">
+                <div class="label">💰 Hasil Jualan</div>
+                <div class="angka" id="hasilJualan">RM 0.00</div>
+            </div>
+            <div class="total-card">
+                <div class="label">📈 Untung / Rugi</div>
+                <div class="angka" id="untungRugi">RM 0.00</div>
+            </div>
         </div>
 
-        <div class="result-summary">
-          <div class="result-title">Hasil Pengiraan</div>
-          <div class="result-main" id="result-main">4 batang = 2 pack</div>
-          <div class="result-sub">Baki: <span id="result-balance">2</span> potong</div>
+        <div class="footnote">
+            ✦ Ubah harga jualan atau harga bahan-bahan — semua akan auto kira semula.
         </div>
-
-        <div class="note-box">
-          <i class="fas fa-lightbulb"></i> <strong>Tips:</strong> Cukup masukkan SATU nilai sahaja (batang ATAU potong ATAU pack), sistem akan kira automatik!
-        </div>
-      </div>
     </div>
 
-    <div class="table-container">
-      <div class="panel-title">
-        <i class="fas fa-table"></i>
-        <span>Jadual Rujukan Cepat</span>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Batang</th>
-            <th>Potongan</th>
-            <th>Pack</th>
-            <th>Baki</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td>8.0</td><td>24</td><td>4</td><td>4</td></tr>
-          <tr class="highlight-row"><td>★</td><td>10.0</td><td>30</td><td>6</td><td>0</td></tr>
-          <tr><td>2</td><td>16.0</td><td>48</td><td>9</td><td>3</td></tr>
-          <tr class="highlight-row"><td>★</td><td>20.0</td><td>60</td><td>12</td><td>0</td></tr>
-          <tr><td>3</td><td>24.0</td><td>72</td><td>14</td><td>2</td></tr>
-          <tr class="highlight-row"><td>★</td><td>30.0</td><td>90</td><td>18</td><td>0</td></tr>
-          <tr><td>4</td><td>32.0</td><td>96</td><td>19</td><td>1</td></tr>
-          <tr class="highlight-row"><td>★</td><td>40.0</td><td>120</td><td>24</td><td>0</td></tr>
-          <tr><td>5</td><td>50.0</td><td>150</td><td>30</td><td>0</td></tr>
-          <tr><td>6</td><td>60.0</td><td>180</td><td>36</td><td>0</td></tr>
-        </tbody>
-      </table>
-    </div>
+</div>
 
-    <div class="footer">
-      <p>BreadFlex Pro v2.0 • Sistem Pengiraan Roti dengan 1 Titik Perpuluhan</p>
-      <p>© 2026 Kalkulator Roti Garlic Nadieyah Homemade</p>
-    </div>
-  </div>
+<script>
+    (function() {
+        const batangInput = document.getElementById('batang');
+        const packInput = document.getElementById('pack');
+        const potongInput = document.getElementById('potong');
 
-  <script>
-    // Ambil semua elemen input
-    const breadSticksInput = document.getElementById('bread-sticks');
-    const piecesInput = document.getElementById('pieces');
-    const packsInput = document.getElementById('packs');
-    const balanceInput = document.getElementById('balance');
-    
-    // Elemen statistik
-    const totalPiecesEl = document.getElementById('total-pieces');
-    const totalPacksEl = document.getElementById('total-packs');
-    const batangValueEl = document.getElementById('batang-value');
-    const efficiencyEl = document.getElementById('efficiency');
-    const resultMainEl = document.getElementById('result-main');
-    const resultBalanceEl = document.getElementById('result-balance');
-    
-    // Simpan input yang sedang aktif
-    let activeInput = 'bread-sticks';
-    
-    // Fungsi untuk reset semua border
-    function resetBorders() {
-      breadSticksInput.classList.remove('active');
-      piecesInput.classList.remove('active');
-      packsInput.classList.remove('active');
-    }
-    
-    // Fungsi untuk set input aktif
-    function setActiveInput(inputElement, inputName) {
-      resetBorders();
-      inputElement.classList.add('active');
-      activeInput = inputName;
-    }
-    
-    // Fungsi untuk mengira dari BATANG
-    function calculateFromBread() {
-      const bread = parseFloat(breadSticksInput.value);
-      if (isNaN(bread) || bread < 0.1) {
-        breadSticksInput.value = 1;
-        calculateFromBread();
-        return;
-      }
-      
-      const pieces = bread * 3;
-      const packs = Math.floor(pieces / 5);
-      const balance = pieces % 5;
-      
-      // Set nilai dengan 1 titik perpuluhan
-      piecesInput.value = pieces.toFixed(1);
-      packsInput.value = packs;
-      balanceInput.value = balance.toFixed(1);
-      
-      updateStats(pieces, packs, bread, balance);
-    }
-    
-    // Fungsi untuk mengira dari POTONG
-    function calculateFromPieces() {
-      let pieces = parseFloat(piecesInput.value);
-      if (isNaN(pieces) || pieces < 1) {
-        piecesInput.value = 1;
-        calculateFromPieces();
-        return;
-      }
-      
-      // Boleh masukkan apa-apa nombor
-      const bread = pieces / 3;
-      const packs = Math.floor(pieces / 5);
-      const balance = pieces % 5;
-      
-      breadSticksInput.value = bread.toFixed(1);
-      packsInput.value = packs;
-      balanceInput.value = balance.toFixed(1);
-      
-      updateStats(pieces, packs, bread, balance);
-    }
-    
-    // FUNGSI BARU: Mengira dari PACK (beri pecahan batang)
-    function calculateFromPacks() {
-      const packs = parseInt(packsInput.value);
-      if (isNaN(packs) || packs < 1) {
-        packsInput.value = 1;
-        calculateFromPacks();
-        return;
-      }
-      
-      // Kira terus: pack × 5 ÷ 3
-      const pieces = packs * 5;
-      const bread = pieces / 3;
-      const balance = 0; // Sentiasa 0 kerana tepat mengikut pack
-      
-      // Set nilai dengan 1 titik perpuluhan
-      breadSticksInput.value = bread.toFixed(1);
-      piecesInput.value = pieces;
-      balanceInput.value = balance.toFixed(1);
-      
-      updateStats(pieces, packs, bread, balance);
-    }
-    
-    // Fungsi untuk update statistik dan paparan
-    function updateStats(pieces, packs, bread, balance) {
-      totalPiecesEl.textContent = pieces.toFixed(0);
-      totalPacksEl.textContent = packs;
-      batangValueEl.textContent = bread.toFixed(1);
-      
-      // Kira kecekapan
-      const efficiency = balance === 0 ? 100 : Math.round((pieces - balance) / pieces * 100);
-      efficiencyEl.textContent = efficiency + '%';
-      
-      // Update result summary
-      resultMainEl.textContent = `${bread.toFixed(1)} batang = ${packs} pack`;
-      resultBalanceEl.textContent = balance.toFixed(1);
-      
-      // Warna kecekapan
-      if (efficiency === 100) {
-        efficiencyEl.style.color = 'var(--success)';
-      } else if (efficiency >= 90) {
-        efficiencyEl.style.color = 'var(--warning)';
-      } else {
-        efficiencyEl.style.color = 'var(--danger)';
-      }
-    }
-    
-    // Event listeners untuk focus
-    breadSticksInput.addEventListener('focus', () => {
-      setActiveInput(breadSticksInput, 'bread-sticks');
-    });
-    
-    piecesInput.addEventListener('focus', () => {
-      setActiveInput(piecesInput, 'pieces');
-    });
-    
-    packsInput.addEventListener('focus', () => {
-      setActiveInput(packsInput, 'packs');
-    });
-    
-    // Event listeners untuk input (realtime)
-    breadSticksInput.addEventListener('input', () => {
-      if (breadSticksInput.value === '' || breadSticksInput.value === '-') return;
-      calculateFromBread();
-    });
-    
-    piecesInput.addEventListener('input', () => {
-      if (piecesInput.value === '' || piecesInput.value === '-') return;
-      calculateFromPieces();
-    });
-    
-    packsInput.addEventListener('input', () => {
-      if (packsInput.value === '' || packsInput.value === '-') return;
-      calculateFromPacks();
-    });
-    
-    // Event listeners untuk change
-    breadSticksInput.addEventListener('change', () => {
-      if (breadSticksInput.value === '') breadSticksInput.value = 1;
-      calculateFromBread();
-    });
-    
-    piecesInput.addEventListener('change', () => {
-      if (piecesInput.value === '') piecesInput.value = 1;
-      calculateFromPieces();
-    });
-    
-    packsInput.addEventListener('change', () => {
-      if (packsInput.value === '') packsInput.value = 1;
-      calculateFromPacks();
-    });
-    
-    // Keydown untuk arrow keys
-    breadSticksInput.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        setTimeout(calculateFromBread, 10);
-      }
-    });
-    
-    piecesInput.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        setTimeout(calculateFromPieces, 10);
-      }
-    });
-    
-    packsInput.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        setTimeout(calculateFromPacks, 10);
-      }
-    });
-    
-    // Demo button untuk test
-    function testCalculation() {
-      packsInput.value = 16;
-      calculateFromPacks();
-      setActiveInput(packsInput, 'packs');
-      alert('Test: 16 pack = ' + breadSticksInput.value + ' batang');
-    }
-    
-    // Initialize
-    calculateFromBread();
-    setActiveInput(breadSticksInput, 'bread-sticks');
-    
-    // Contoh: Test dengan pelbagai nilai
-    console.log('Kalkulator Roti Fleksibel sedia!');
-    console.log('Contoh: 16 pack = 26.7 batang, 17 pack = 28.3 batang, 18 pack = 30.0 batang');
-  </script>
+        const hargaJualan = document.getElementById('hargaJualan');
+        const hargaSusu = document.getElementById('hargaSusu');
+        const hargaMushroom = document.getElementById('hargaMushroom');
+        const hargaButter = document.getElementById('hargaButter');
+        const hargaCup = document.getElementById('hargaCup');
+        const hargaBawang = document.getElementById('hargaBawang');
+        const hargaRoti = document.getElementById('hargaRoti');
+
+        const totalKosEl = document.getElementById('totalKos');
+        const hasilJualanEl = document.getElementById('hasilJualan');
+        const untungRugiEl = document.getElementById('untungRugi');
+
+        const KUANTITI_SUSU = 3;
+        const KUANTITI_MUSHROOM = 2;
+        const KUANTITI_BUTTER = 1;
+        const KUANTITI_CUP = 40;
+        const KUANTITI_BAWANG = 2;
+        const KUANTITI_ROTI = 68;
+
+        const POTONGAN_PER_BATANG = 3;
+        const KETUL_PER_PACK = 5;
+
+        let isUpdating = false;
+
+        function updateFromBatang(val) {
+            if (isUpdating) return;
+            isUpdating = true;
+            let btg = parseFloat(val);
+            if (isNaN(btg) || btg < 0) btg = 0;
+            let totalPotong = btg * POTONGAN_PER_BATANG;
+            let pack = totalPotong / KETUL_PER_PACK;
+            packInput.value = (Math.round(pack * 10) / 10).toFixed(1);
+            potongInput.value = (Math.round(totalPotong * 10) / 10).toFixed(1);
+            isUpdating = false;
+            kiraKosDanUntung();
+        }
+
+        function updateFromPack(val) {
+            if (isUpdating) return;
+            isUpdating = true;
+            let p = parseFloat(val);
+            if (isNaN(p) || p < 0) p = 0;
+            let totalKetul = p * KETUL_PER_PACK;
+            let btg = totalKetul / POTONGAN_PER_BATANG;
+            batangInput.value = (Math.round(btg * 10) / 10).toFixed(1);
+            potongInput.value = (Math.round(totalKetul * 10) / 10).toFixed(1);
+            isUpdating = false;
+            kiraKosDanUntung();
+        }
+
+        function updateFromPotong(val) {
+            if (isUpdating) return;
+            isUpdating = true;
+            let ptg = parseFloat(val);
+            if (isNaN(ptg) || ptg < 0) ptg = 0;
+            let btg = ptg / POTONGAN_PER_BATANG;
+            let p = ptg / KETUL_PER_PACK;
+            batangInput.value = (Math.round(btg * 10) / 10).toFixed(1);
+            packInput.value = (Math.round(p * 10) / 10).toFixed(1);
+            isUpdating = false;
+            kiraKosDanUntung();
+        }
+
+        function kiraKosDanUntung() {
+            const hJualan = parseFloat(hargaJualan.value) || 0;
+            const hSusu = parseFloat(hargaSusu.value) || 0;
+            const hMushroom = parseFloat(hargaMushroom.value) || 0;
+            const hButter = parseFloat(hargaButter.value) || 0;
+            const hCup = parseFloat(hargaCup.value) || 0;
+            const hBawang = parseFloat(hargaBawang.value) || 0;
+            const hRoti = parseFloat(hargaRoti.value) || 0;
+
+            const kosSusu = hSusu * KUANTITI_SUSU;
+            const kosMushroom = hMushroom * KUANTITI_MUSHROOM;
+            const kosButter = hButter * KUANTITI_BUTTER;
+            const kosCup = hCup * KUANTITI_CUP;
+            const kosBawang = hBawang * KUANTITI_BAWANG;
+            const kosRoti = hRoti * KUANTITI_ROTI;
+
+            const totalKos = kosSusu + kosMushroom + kosButter + kosCup + kosBawang + kosRoti;
+
+            const packValue = parseFloat(packInput.value) || 0;
+            const hasilJualan = packValue * hJualan;
+
+            const untungRugi = hasilJualan - totalKos;
+
+            totalKosEl.textContent = 'RM ' + totalKos.toFixed(2);
+            hasilJualanEl.textContent = 'RM ' + hasilJualan.toFixed(2);
+            untungRugiEl.textContent = 'RM ' + untungRugi.toFixed(2);
+
+            if (untungRugi >= 0) {
+                untungRugiEl.className = 'angka keuntungan';
+            } else {
+                untungRugiEl.className = 'angka rugi';
+            }
+        }
+
+        // Event listeners utama
+        batangInput.addEventListener('input', function(e) {
+            if (e.target.value === '' || e.target.value === '-') return;
+            updateFromBatang(e.target.value);
+        });
+
+        packInput.addEventListener('input', function(e) {
+            if (e.target.value === '' || e.target.value === '-') return;
+            updateFromPack(e.target.value);
+        });
+
+        potongInput.addEventListener('input', function(e) {
+            if (e.target.value === '' || e.target.value === '-') return;
+            updateFromPotong(e.target.value);
+        });
+
+        // Event listeners kos & harga jualan
+        const allCostInputs = [hargaJualan, hargaSusu, hargaMushroom, hargaButter, hargaCup, hargaBawang, hargaRoti];
+        allCostInputs.forEach(inp => {
+            inp.addEventListener('input', kiraKosDanUntung);
+            inp.addEventListener('change', kiraKosDanUntung);
+        });
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            isUpdating = true;
+            batangInput.value = '68';
+            packInput.value = '40.0';
+            potongInput.value = '200.0';
+            isUpdating = false;
+            hargaJualan.value = '4.50';
+            hargaSusu.value = '6.00';
+            hargaMushroom.value = '5.00';
+            hargaButter.value = '6.00';
+            hargaCup.value = '0.30';
+            hargaBawang.value = '1.00';
+            hargaRoti.value = '0.30';
+            kiraKosDanUntung();
+        });
+
+        // Handle empty / negatif
+        const allNumberInputs = [batangInput, packInput, potongInput, ...allCostInputs];
+        allNumberInputs.forEach(inp => {
+            inp.addEventListener('blur', function() {
+                if (this.value === '' || this.value === '-') {
+                    this.value = '0';
+                    this.dispatchEvent(new Event('input'));
+                }
+            });
+            inp.addEventListener('change', function() {
+                let v = parseFloat(this.value);
+                if (isNaN(v) || v < 0) {
+                    this.value = '0';
+                    this.dispatchEvent(new Event('input'));
+                }
+            });
+        });
+
+        // Init
+        batangInput.value = '68';
+        packInput.value = '40.0';
+        potongInput.value = '200.0';
+        hargaJualan.value = '4.50';
+        hargaSusu.value = '6.00';
+        hargaMushroom.value = '5.00';
+        hargaButter.value = '6.00';
+        hargaCup.value = '0.30';
+        hargaBawang.value = '1.00';
+        hargaRoti.value = '0.30';
+        kiraKosDanUntung();
+
+        console.log('🧮 Kalkulator roti + kos & untung sedia! Harga jualan boleh ubah.');
+    })();
+</script>
+
 </body>
-                                                                                   </html>
-
+</html>
