@@ -462,6 +462,12 @@
                 </span>
             </div>
             <div class="cost-item">
+                <span class="label">🧄 Bawang Putih (125g) <span style="font-weight:400;color:#8b7355;" id="qtyGarlic">x1</span></span>
+                <span class="value">
+                    RM <input type="number" id="hargaGarlic" min="0" step="0.01" value="5.00">
+                </span>
+            </div>
+            <div class="cost-item">
                 <span class="label">🥤 Cup + Box <span style="font-weight:400;color:#8b7355;" id="qtyCup">x40</span></span>
                 <span class="value">
                     RM <input type="number" id="hargaCup" min="0" step="0.01" value="0.30">
@@ -497,7 +503,7 @@
         </div>
 
         <div class="footnote">
-            ✦ Semua kuantiti bahan auto adjust berdasarkan bilangan pack yang terhasil.
+            ✦ 125g bawang putih untuk 3 kotak susu (40 pack) | 500g garlic = RM5
         </div>
     </div>
 
@@ -513,6 +519,7 @@
         const hargaSusu = document.getElementById('hargaSusu');
         const hargaMushroom = document.getElementById('hargaMushroom');
         const hargaButter = document.getElementById('hargaButter');
+        const hargaGarlic = document.getElementById('hargaGarlic');
         const hargaCup = document.getElementById('hargaCup');
         const hargaBawang = document.getElementById('hargaBawang');
         const hargaRoti = document.getElementById('hargaRoti');
@@ -521,20 +528,21 @@
         const hasilJualanEl = document.getElementById('hasilJualan');
         const untungRugiEl = document.getElementById('untungRugi');
 
-        // Elemen untuk display kuantiti
         const qtySusu = document.getElementById('qtySusu');
         const qtyMushroom = document.getElementById('qtyMushroom');
         const qtyButter = document.getElementById('qtyButter');
+        const qtyGarlic = document.getElementById('qtyGarlic');
         const qtyCup = document.getElementById('qtyCup');
         const qtyBawang = document.getElementById('qtyBawang');
         const qtyRoti = document.getElementById('qtyRoti');
 
-        // Data base untuk 40 pack (68 batang)
+        // BASE untuk 40 pack (68 batang)
         const BASE_PACK = 40;
         const BASE_BATANG = 68;
         const BASE_SUSU = 3;
         const BASE_MUSHROOM = 2;
         const BASE_BUTTER = 1;
+        const BASE_GARLIC = 1;      // 125g (1 pek)
         const BASE_CUP = 40;
         const BASE_BAWANG = 2;
 
@@ -583,16 +591,14 @@
         }
 
         function kiraKosDanUntung() {
-            // Baca jumlah pack semasa
             const packValue = parseFloat(packInput.value) || 0;
-            
-            // Kira nisbah berbanding base 40 pack
             const ratio = packValue / BASE_PACK;
 
-            // Kira kuantiti berdasarkan nisbah
+            // Kira kuantiti berdasarkan ratio
             const qtySusuVal = BASE_SUSU * ratio;
             const qtyMushroomVal = BASE_MUSHROOM * ratio;
             const qtyButterVal = BASE_BUTTER * ratio;
+            const qtyGarlicVal = BASE_GARLIC * ratio;
             const qtyCupVal = BASE_CUP * ratio;
             const qtyBawangVal = BASE_BAWANG * ratio;
             const qtyRotiVal = parseFloat(batangInput.value) || 0;
@@ -601,28 +607,31 @@
             qtySusu.textContent = 'x' + qtySusuVal.toFixed(1);
             qtyMushroom.textContent = 'x' + qtyMushroomVal.toFixed(1);
             qtyButter.textContent = 'x' + qtyButterVal.toFixed(1);
+            qtyGarlic.textContent = 'x' + qtyGarlicVal.toFixed(1) + ' (125g)';
             qtyCup.textContent = 'x' + qtyCupVal.toFixed(1);
             qtyBawang.textContent = 'x' + qtyBawangVal.toFixed(1);
             qtyRoti.textContent = 'x' + qtyRotiVal.toFixed(1);
 
-            // Baca harga seunit
+            // Baca harga
             const hJualan = parseFloat(hargaJualan.value) || 0;
             const hSusu = parseFloat(hargaSusu.value) || 0;
             const hMushroom = parseFloat(hargaMushroom.value) || 0;
             const hButter = parseFloat(hargaButter.value) || 0;
+            const hGarlic = parseFloat(hargaGarlic.value) || 0;
             const hCup = parseFloat(hargaCup.value) || 0;
             const hBawang = parseFloat(hargaBawang.value) || 0;
             const hRoti = parseFloat(hargaRoti.value) || 0;
 
-            // Kira kos (guna kuantiti sebenar)
+            // Kira kos
             const kosSusu = hSusu * qtySusuVal;
             const kosMushroom = hMushroom * qtyMushroomVal;
             const kosButter = hButter * qtyButterVal;
+            const kosGarlic = hGarlic * qtyGarlicVal;
             const kosCup = hCup * qtyCupVal;
             const kosBawang = hBawang * qtyBawangVal;
             const kosRoti = hRoti * qtyRotiVal;
 
-            const totalKos = kosSusu + kosMushroom + kosButter + kosCup + kosBawang + kosRoti;
+            const totalKos = kosSusu + kosMushroom + kosButter + kosGarlic + kosCup + kosBawang + kosRoti;
             const hasilJualan = packValue * hJualan;
             const untungRugi = hasilJualan - totalKos;
 
@@ -654,13 +663,13 @@
         });
 
         // Event listeners kos & harga jualan
-        const allCostInputs = [hargaJualan, hargaSusu, hargaMushroom, hargaButter, hargaCup, hargaBawang, hargaRoti];
+        const allCostInputs = [hargaJualan, hargaSusu, hargaMushroom, hargaButter, hargaGarlic, hargaCup, hargaBawang, hargaRoti];
         allCostInputs.forEach(inp => {
             inp.addEventListener('input', kiraKosDanUntung);
             inp.addEventListener('change', kiraKosDanUntung);
         });
 
-        // Reset button
+        // Reset
         document.getElementById('resetBtn').addEventListener('click', function() {
             isUpdating = true;
             batangInput.value = '68';
@@ -671,6 +680,7 @@
             hargaSusu.value = '6.00';
             hargaMushroom.value = '5.00';
             hargaButter.value = '6.00';
+            hargaGarlic.value = '5.00';
             hargaCup.value = '0.30';
             hargaBawang.value = '1.00';
             hargaRoti.value = '0.30';
@@ -703,12 +713,13 @@
         hargaSusu.value = '6.00';
         hargaMushroom.value = '5.00';
         hargaButter.value = '6.00';
+        hargaGarlic.value = '5.00';
         hargaCup.value = '0.30';
         hargaBawang.value = '1.00';
         hargaRoti.value = '0.30';
         kiraKosDanUntung();
 
-        console.log('🧮 Kalkulator roti + kos auto adjust!');
+        console.log('🧮 Kalkulator roti + kos (dengan garlic!) sedia!');
     })();
 </script>
 
