@@ -269,7 +269,6 @@
             background: white;
         }
 
-        /* Baris harga jualan */
         .harga-jualan-row {
             display: flex;
             justify-content: center;
@@ -434,10 +433,9 @@
     <div class="cost-section">
         <h2>
             💰 Kos & Untung
-            <small>untuk 40 pack (contoh)</small>
+            <small>auto ikut kuantiti</small>
         </h2>
 
-        <!-- BARIS HARGA JUALAN (boleh ubah) -->
         <div class="harga-jualan-row">
             <label for="hargaJualan">💵 Harga Jualan Seunit (pack):</label>
             <input type="number" id="hargaJualan" min="0" step="0.01" value="4.50">
@@ -446,37 +444,37 @@
 
         <div class="cost-grid" id="costGrid">
             <div class="cost-item">
-                <span class="label">🥛 Susu (kotak) <span style="font-weight:400;color:#8b7355;">x3</span></span>
+                <span class="label">🥛 Susu (kotak) <span style="font-weight:400;color:#8b7355;" id="qtySusu">x3</span></span>
                 <span class="value">
                     RM <input type="number" id="hargaSusu" min="0" step="0.1" value="6.00">
                 </span>
             </div>
             <div class="cost-item">
-                <span class="label">🍄 Mushroom (200g) <span style="font-weight:400;color:#8b7355;">x2</span></span>
+                <span class="label">🍄 Mushroom (200g) <span style="font-weight:400;color:#8b7355;" id="qtyMushroom">x2</span></span>
                 <span class="value">
                     RM <input type="number" id="hargaMushroom" min="0" step="0.1" value="5.00">
                 </span>
             </div>
             <div class="cost-item">
-                <span class="label">🧈 Butter <span style="font-weight:400;color:#8b7355;">x1</span></span>
+                <span class="label">🧈 Butter <span style="font-weight:400;color:#8b7355;" id="qtyButter">x1</span></span>
                 <span class="value">
                     RM <input type="number" id="hargaButter" min="0" step="0.1" value="6.00">
                 </span>
             </div>
             <div class="cost-item">
-                <span class="label">🥤 Cup + Box <span style="font-weight:400;color:#8b7355;">x40</span></span>
+                <span class="label">🥤 Cup + Box <span style="font-weight:400;color:#8b7355;" id="qtyCup">x40</span></span>
                 <span class="value">
                     RM <input type="number" id="hargaCup" min="0" step="0.01" value="0.30">
                 </span>
             </div>
             <div class="cost-item">
-                <span class="label">🧅 Bawang Holland <span style="font-weight:400;color:#8b7355;">x2</span></span>
+                <span class="label">🧅 Bawang Holland <span style="font-weight:400;color:#8b7355;" id="qtyBawang">x2</span></span>
                 <span class="value">
                     RM <input type="number" id="hargaBawang" min="0" step="0.1" value="1.00">
                 </span>
             </div>
             <div class="cost-item">
-                <span class="label">🥖 Roti (sebatang) <span style="font-weight:400;color:#8b7355;">x68</span></span>
+                <span class="label">🥖 Roti (sebatang) <span style="font-weight:400;color:#8b7355;" id="qtyRoti">x68</span></span>
                 <span class="value">
                     RM <input type="number" id="hargaRoti" min="0" step="0.01" value="0.30">
                 </span>
@@ -499,7 +497,7 @@
         </div>
 
         <div class="footnote">
-            ✦ Ubah harga jualan atau harga bahan-bahan — semua akan auto kira semula.
+            ✦ Semua kuantiti bahan auto adjust berdasarkan bilangan pack yang terhasil.
         </div>
     </div>
 
@@ -523,12 +521,22 @@
         const hasilJualanEl = document.getElementById('hasilJualan');
         const untungRugiEl = document.getElementById('untungRugi');
 
-        const KUANTITI_SUSU = 3;
-        const KUANTITI_MUSHROOM = 2;
-        const KUANTITI_BUTTER = 1;
-        const KUANTITI_CUP = 40;
-        const KUANTITI_BAWANG = 2;
-        const KUANTITI_ROTI = 68;
+        // Elemen untuk display kuantiti
+        const qtySusu = document.getElementById('qtySusu');
+        const qtyMushroom = document.getElementById('qtyMushroom');
+        const qtyButter = document.getElementById('qtyButter');
+        const qtyCup = document.getElementById('qtyCup');
+        const qtyBawang = document.getElementById('qtyBawang');
+        const qtyRoti = document.getElementById('qtyRoti');
+
+        // Data base untuk 40 pack (68 batang)
+        const BASE_PACK = 40;
+        const BASE_BATANG = 68;
+        const BASE_SUSU = 3;
+        const BASE_MUSHROOM = 2;
+        const BASE_BUTTER = 1;
+        const BASE_CUP = 40;
+        const BASE_BAWANG = 2;
 
         const POTONGAN_PER_BATANG = 3;
         const KETUL_PER_PACK = 5;
@@ -575,6 +583,29 @@
         }
 
         function kiraKosDanUntung() {
+            // Baca jumlah pack semasa
+            const packValue = parseFloat(packInput.value) || 0;
+            
+            // Kira nisbah berbanding base 40 pack
+            const ratio = packValue / BASE_PACK;
+
+            // Kira kuantiti berdasarkan nisbah
+            const qtySusuVal = BASE_SUSU * ratio;
+            const qtyMushroomVal = BASE_MUSHROOM * ratio;
+            const qtyButterVal = BASE_BUTTER * ratio;
+            const qtyCupVal = BASE_CUP * ratio;
+            const qtyBawangVal = BASE_BAWANG * ratio;
+            const qtyRotiVal = parseFloat(batangInput.value) || 0;
+
+            // Update display kuantiti
+            qtySusu.textContent = 'x' + qtySusuVal.toFixed(1);
+            qtyMushroom.textContent = 'x' + qtyMushroomVal.toFixed(1);
+            qtyButter.textContent = 'x' + qtyButterVal.toFixed(1);
+            qtyCup.textContent = 'x' + qtyCupVal.toFixed(1);
+            qtyBawang.textContent = 'x' + qtyBawangVal.toFixed(1);
+            qtyRoti.textContent = 'x' + qtyRotiVal.toFixed(1);
+
+            // Baca harga seunit
             const hJualan = parseFloat(hargaJualan.value) || 0;
             const hSusu = parseFloat(hargaSusu.value) || 0;
             const hMushroom = parseFloat(hargaMushroom.value) || 0;
@@ -583,18 +614,16 @@
             const hBawang = parseFloat(hargaBawang.value) || 0;
             const hRoti = parseFloat(hargaRoti.value) || 0;
 
-            const kosSusu = hSusu * KUANTITI_SUSU;
-            const kosMushroom = hMushroom * KUANTITI_MUSHROOM;
-            const kosButter = hButter * KUANTITI_BUTTER;
-            const kosCup = hCup * KUANTITI_CUP;
-            const kosBawang = hBawang * KUANTITI_BAWANG;
-            const kosRoti = hRoti * KUANTITI_ROTI;
+            // Kira kos (guna kuantiti sebenar)
+            const kosSusu = hSusu * qtySusuVal;
+            const kosMushroom = hMushroom * qtyMushroomVal;
+            const kosButter = hButter * qtyButterVal;
+            const kosCup = hCup * qtyCupVal;
+            const kosBawang = hBawang * qtyBawangVal;
+            const kosRoti = hRoti * qtyRotiVal;
 
             const totalKos = kosSusu + kosMushroom + kosButter + kosCup + kosBawang + kosRoti;
-
-            const packValue = parseFloat(packInput.value) || 0;
             const hasilJualan = packValue * hJualan;
-
             const untungRugi = hasilJualan - totalKos;
 
             totalKosEl.textContent = 'RM ' + totalKos.toFixed(2);
@@ -679,7 +708,7 @@
         hargaRoti.value = '0.30';
         kiraKosDanUntung();
 
-        console.log('🧮 Kalkulator roti + kos & untung sedia! Harga jualan boleh ubah.');
+        console.log('🧮 Kalkulator roti + kos auto adjust!');
     })();
 </script>
 
