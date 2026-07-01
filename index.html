@@ -1,727 +1,606 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Roti Garlic</title>
-     <link rel="icon" type="image/x-icon" href="/kalk1.ico"> 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<title>ERP Stock Report PRO (DUAL FORMAT SUPPORT)</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(145deg, #f7f3e9 0%, #fff8ed 100%);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
-        .container {
-            max-width: 750px;
-            width: 100%;
-        }
+<style>
+body { font-family: Arial; font-size: 11px; padding: 12px; background:#f4f6f9; }
 
-        .card {
-            background: rgba(255, 248, 235, 0.85);
-            backdrop-filter: blur(6px);
-            border-radius: 48px;
-            padding: 35px 30px 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f0e2d0;
-            margin-bottom: 20px;
-        }
+table { border-collapse: collapse; width: 100%; background:#fff; }
 
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #4b3a2b;
-            text-align: center;
-            letter-spacing: -0.5px;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+th,td{
+    border:1px solid #333;
+    padding:4px;
+    font-size:11px;
+    text-align:center;
+}
 
-        h1 small {
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: #8b7355;
-            background: #ede3d4;
-            padding: 4px 16px;
-            border-radius: 40px;
-        }
+thead th{
+    position:sticky;
+    top:0;
+    background:#fff;
+    z-index:5;
+}
 
-        .subhead {
-            text-align: center;
-            color: #7d6b56;
-            font-size: 0.9rem;
-            border-bottom: 2px dashed #dccfc0;
-            padding-bottom: 14px;
-            margin-bottom: 22px;
-        }
+.group-actual{background:#cfe8ff;font-weight:bold;}
+.group-ri{background:#d6f5d6;font-weight:bold;}
+.group-var{background:#ffd6d6;font-weight:bold;}
 
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 14px;
-            margin-bottom: 18px;
-        }
-
-        .kotak {
-            background: white;
-            border-radius: 24px;
-            padding: 14px 8px 16px;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02), 0 6px 12px rgba(180, 140, 100, 0.08);
-            border: 1px solid #e9dbcb;
-            text-align: center;
-            transition: 0.2s;
-        }
-
-        .kotak:focus-within {
-            border-color: #b3927a;
-            box-shadow: 0 0 0 4px rgba(179, 146, 122, 0.15);
-        }
-
-        .kotak label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            color: #6b5a48;
-            margin-bottom: 8px;
-        }
-
-        .kotak input {
-            width: 100%;
-            padding: 10px 4px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-align: center;
-            border: none;
-            background: transparent;
-            color: #3d2e1e;
-            outline: none;
-            font-family: inherit;
-        }
-
-        .kotak input[type="number"]::-webkit-inner-spin-button,
-        .kotak input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .kotak input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        .kotak .unit {
-            font-size: 0.7rem;
-            color: #a28b74;
-            margin-top: 2px;
-            font-weight: 500;
-        }
-
-        .kotak.highlight {
-            background: #fcf7f0;
-            border-color: #d5bea8;
-        }
-        .kotak.output {
-            background: #f4ede4;
-            border-color: #cfbca9;
-        }
-        .kotak.output input {
-            color: #5b462f;
-        }
-
-        .info-bar {
-            background: #e8dbce;
-            border-radius: 60px;
-            padding: 12px 18px;
-            margin: 12px 0 16px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px 12px;
-            font-size: 0.85rem;
-            color: #3e3227;
-        }
-
-        .info-bar span {
-            font-weight: 600;
-            background: white;
-            padding: 2px 14px;
-            border-radius: 40px;
-            color: #4f3c2b;
-        }
-
-        .info-bar .badge {
-            background: #b3927a;
-            color: white;
-            padding: 3px 14px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .reset-btn {
-            background: #e2d2c0;
-            border: none;
-            border-radius: 60px;
-            padding: 10px 20px;
-            font-weight: 600;
-            color: #4b3a2b;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 100%;
-            margin-top: 12px;
-            letter-spacing: 0.3px;
-            border: 1px solid #d2bfab;
-        }
-
-        .reset-btn:hover {
-            background: #d6c2ad;
-            transform: scale(0.98);
-        }
-        .reset-btn:active {
-            background: #cbb49b;
-        }
-
-        .cost-section {
-            background: #f8f2e9;
-            border-radius: 32px;
-            padding: 22px 24px 26px;
-            border: 1px solid #e2d2c0;
-            margin-top: 6px;
-        }
-
-        .cost-section h2 {
-            font-size: 1.2rem;
-            color: #4b3a2b;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .cost-section h2 small {
-            font-size: 0.8rem;
-            font-weight: 400;
-            color: #7d6b56;
-            background: #ede3d4;
-            padding: 2px 14px;
-            border-radius: 40px;
-        }
-
-        .cost-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px 18px;
-            margin-bottom: 16px;
-        }
-
-        .cost-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            padding: 8px 14px;
-            border-radius: 40px;
-            border: 1px solid #e6d7c6;
-            font-size: 0.9rem;
-        }
-
-        .cost-item .label {
-            color: #5b4a38;
-            font-weight: 500;
-        }
-
-        .cost-item .value {
-            font-weight: 700;
-            color: #3d2e1e;
-        }
-
-        .cost-item .value input {
-            width: 70px;
-            padding: 4px 6px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-align: center;
-            border: 1px solid #dccfc0;
-            border-radius: 30px;
-            background: #fcf7f0;
-            color: #3d2e1e;
-            outline: none;
-        }
-
-        .cost-item .value input:focus {
-            border-color: #b3927a;
-            background: white;
-        }
-
-        .harga-jualan-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 16px;
-            background: white;
-            padding: 10px 18px;
-            border-radius: 60px;
-            border: 1px solid #d5bea8;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-        }
-
-        .harga-jualan-row label {
-            font-weight: 600;
-            color: #4b3a2b;
-            font-size: 0.95rem;
-        }
-
-        .harga-jualan-row input {
-            width: 100px;
-            padding: 6px 10px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-align: center;
-            border: 1px solid #dccfc0;
-            border-radius: 30px;
-            background: #fcf7f0;
-            color: #3d2e1e;
-            outline: none;
-        }
-
-        .harga-jualan-row input:focus {
-            border-color: #b3927a;
-            background: white;
-        }
-
-        .harga-jualan-row .hint {
-            font-size: 0.75rem;
-            color: #8b7355;
-        }
-
-        .total-cost-box {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-            margin-top: 6px;
-        }
-
-        .total-card {
-            background: white;
-            border-radius: 24px;
-            padding: 14px 10px;
-            text-align: center;
-            border: 1px solid #e2d2c0;
-        }
-
-        .total-card .label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #8b7355;
-            font-weight: 600;
-        }
-
-        .total-card .angka {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #3d2e1e;
-            margin-top: 4px;
-        }
-
-        .total-card .angka.keuntungan {
-            color: #2a7a4a;
-        }
-
-        .total-card .angka.rugi {
-            color: #b34a4a;
-        }
-
-        .footnote {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #a48d78;
-            margin-top: 16px;
-            border-top: 1px solid #e2d3c2;
-            padding-top: 14px;
-        }
-
-        @media (max-width: 550px) {
-            .grid-3 {
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 8px;
-            }
-            .kotak input {
-                font-size: 1.2rem;
-                padding: 8px 2px;
-            }
-            .cost-grid {
-                grid-template-columns: 1fr;
-            }
-            .total-cost-box {
-                grid-template-columns: 1fr 1fr;
-            }
-            .card {
-                padding: 20px 14px 24px;
-            }
-            .cost-section {
-                padding: 16px 14px 20px;
-            }
-            h1 {
-                font-size: 1.6rem;
-            }
-            .harga-jualan-row {
-                flex-direction: column;
-                gap: 8px;
-                padding: 14px;
-            }
-        }
-    </style>
+.duplicate{background:#fff3cd!important;border:2px solid red!important;}
+.pos{color:green;font-weight:bold;}
+.neg{color:red;font-weight:bold;}
+.total-row{background:#e2e3e5;font-weight:bold;}
+</style>
 </head>
+
 <body>
 
-<div class="container">
+<h2>ERP STOCK REPORT PRO (DUAL FORMAT SUPPORT)</h2>
 
-    <div class="card">
-        <h1>
-            🍄 Garlic & Mushroom
-        </h1>
-        <div class="subhead">
-            𝑁𝑎𝑑𝑖𝑎ℎ 𝐻𝑜𝑚𝑒𝑚𝑎𝑑𝑒 &nbsp;
-        </div>
+<input type="file" id="fileInput">
+<button onclick="exportExcel()">EXPORT</button>
 
-        <div class="grid-3">
-            <div class="kotak highlight">
-                <label for="batang">🥖 Bil. roti</label>
-                <input type="number" id="batang" min="0" step="0.5" value="68">
-                <div class="unit">batang</div>
-            </div>
-            <div class="kotak output">
-                <label for="pack">📦 Pack (jual)</label>
-                <input type="number" id="pack" min="0" step="0.1" value="40.0">
-                <div class="unit">pack (5 ketul)</div>
-            </div>
-            <div class="kotak output">
-                <label for="potong">🔪 Potongan</label>
-                <input type="number" id="potong" min="0" step="0.1" value="200.0">
-                <div class="unit">ketul</div>
-            </div>
-        </div>
+<select id="typeFilter">
+<option value="both">Both</option>
+<option value="outright" selected>Outright</option>
+<option value="csgnmnt">Csgnmnt</option>
+</select>
 
-        <div class="info-bar">
-            <span>🧄 1 batang = 3 potong</span>
-            <span class="badge">1 pack = 5 ketul</span>
-            <span>⚡ auto kira</span>
-        </div>
+<table>
+<thead>
+<tr>
+<th>Dept</th><th>Department</th><th>Brand</th>
+<th>SKU</th><th>Description</th><th>Type</th>
 
-        <button class="reset-btn" id="resetBtn">⟲ Set semula (default 40 pack)</button>
-    </div>
+<th colspan="4" class="group-actual">ACT</th>
+<th colspan="4" class="group-ri">RI</th>
+<th colspan="4" class="group-var">VAR</th>
+</tr>
 
-    <div class="cost-section">
-        <h2>
-            💰 Kos & Untung
-            <small>auto ikut kuantiti</small>
-        </h2>
+<tr>
+<th colspan="6"></th>
+<th>Qty</th><th>Cost</th><th>Retail</th><th>MO%</th>
+<th>Qty</th><th>Cost</th><th>Retail</th><th>MO%</th>
+<th>Qty</th><th>Cost</th><th>Retail</th><th>MO%</th>
+</tr>
+</thead>
 
-        <div class="harga-jualan-row">
-            <label for="hargaJualan">💵 Harga Jualan Seunit (pack):</label>
-            <input type="number" id="hargaJualan" min="0" step="0.01" value="4.50">
-            <span class="hint">RM / pack</span>
-        </div>
-
-        <div class="cost-grid" id="costGrid">
-            <div class="cost-item">
-                <span class="label">🥛 Susu (kotak) <span style="font-weight:400;color:#8b7355;" id="qtySusu">x3</span></span>
-                <span class="value">
-                    RM <input type="number" id="hargaSusu" min="0" step="0.1" value="6.00">
-                </span>
-            </div>
-            <div class="cost-item">
-                <span class="label">🍄 Mushroom (200g) <span style="font-weight:400;color:#8b7355;" id="qtyMushroom">x2</span></span>
-                <span class="value">
-                    RM <input type="number" id="hargaMushroom" min="0" step="0.1" value="5.00">
-                </span>
-            </div>
-            <div class="cost-item">
-                <span class="label">🧈 Butter <span style="font-weight:400;color:#8b7355;" id="qtyButter">x1</span></span>
-                <span class="value">
-                    RM <input type="number" id="hargaButter" min="0" step="0.1" value="6.00">
-                </span>
-            </div>
-            <div class="cost-item">
-                <span class="label">🧄 Garlic (125g) <span style="font-weight:400;color:#8b7355;" id="qtyGarlic">x1</span></span>
-                <span class="value">
-                    RM <input type="number" id="hargaGarlic" min="0" step="0.01" value="1.25">
-                </span>
-            </div>
-            <div class="cost-item">
-                <span class="label">🥤 Cup + Box <span style="font-weight:400;color:#8b7355;" id="qtyCup">x40</span></span>
-                <span class="value">
-                    RM <input type="number" id="hargaCup" min="0" step="0.01" value="0.50">
-                </span>
-            </div>
-            <div class="cost-item">
-                <span class="label">🧅 Bawang Holland <span style="font-weight:400;color:#8b7355;" id="qtyBawang">x1</span></span>
-                <span class="value">
-                    RM <input type="number" id="hargaBawang" min="0" step="0.1" value="1.00">
-                </span>
-            </div>
-            <div class="cost-item">
-                <span class="label">🥖 Roti (sebatang) <span style="font-weight:400;color:#8b7355;" id="qtyRoti">x68</span></span>
-                <span class="value">
-                    RM <input type="number" id="hargaRoti" min="0" step="0.01" value="0.33">
-                </span>
-            </div>
-        </div>
-
-        <div class="total-cost-box">
-            <div class="total-card">
-                <div class="label">💸 Jumlah Kos</div>
-                <div class="angka" id="totalKos">RM 0.00</div>
-            </div>
-            <div class="total-card">
-                <div class="label">💰 Hasil Jualan</div>
-                <div class="angka" id="hasilJualan">RM 0.00</div>
-            </div>
-            <div class="total-card">
-                <div class="label">📈 Untung / Rugi</div>
-                <div class="angka" id="untungRugi">RM 0.00</div>
-            </div>
-        </div>
-
-        <div class="footnote">
-            ✦ Projek Nadiah ✦ Mushroom Soup Garlic Bread ✦ Since Nov2024
-        </div>
-    </div>
-
-</div>
+<tbody id="tbody"></tbody>
+</table>
 
 <script>
-    (function() {
-        const batangInput = document.getElementById('batang');
-        const packInput = document.getElementById('pack');
-        const potongInput = document.getElementById('potong');
 
-        const hargaJualan = document.getElementById('hargaJualan');
-        const hargaSusu = document.getElementById('hargaSusu');
-        const hargaMushroom = document.getElementById('hargaMushroom');
-        const hargaButter = document.getElementById('hargaButter');
-        const hargaGarlic = document.getElementById('hargaGarlic');
-        const hargaCup = document.getElementById('hargaCup');
-        const hargaBawang = document.getElementById('hargaBawang');
-        const hargaRoti = document.getElementById('hargaRoti');
+let data = [];
+let fileName = "ERP";
+let detectedFormat = "RA04"; // Default
 
-        const totalKosEl = document.getElementById('totalKos');
-        const hasilJualanEl = document.getElementById('hasilJualan');
-        const untungRugiEl = document.getElementById('untungRugi');
+// ===================== FILE INPUT =====================
+document.getElementById("fileInput").addEventListener("change", e=>{
+    const file = e.target.files[0];
+    if(!file) return;
 
-        const qtySusu = document.getElementById('qtySusu');
-        const qtyMushroom = document.getElementById('qtyMushroom');
-        const qtyButter = document.getElementById('qtyButter');
-        const qtyGarlic = document.getElementById('qtyGarlic');
-        const qtyCup = document.getElementById('qtyCup');
-        const qtyBawang = document.getElementById('qtyBawang');
-        const qtyRoti = document.getElementById('qtyRoti');
+    fileName = file.name.split('.')[0];
 
-        // BASE untuk 40 pack (68 batang)
-        const BASE_PACK = 40;
-        const BASE_BATANG = 68;
-        const BASE_SUSU = 3;
-        const BASE_MUSHROOM = 2;
-        const BASE_BUTTER = 1;
-        const BASE_GARLIC = 1;      // 125g (1 pek)
-        const BASE_CUP = 40;
-        const BASE_BAWANG = 1;
+    const reader = new FileReader();
+    reader.onload = e => parse(e.target.result);
+    reader.readAsText(file);
+});
 
-        const POTONGAN_PER_BATANG = 3;
-        const KETUL_PER_PACK = 5;
+// ===================== FILTER =====================
+document.getElementById("typeFilter").addEventListener("change", render);
 
-        let isUpdating = false;
+// ===================== CLEAN =====================
+function clean(v){
+    return (v||"").toString().trim().toUpperCase();
+}
 
-        function updateFromBatang(val) {
-            if (isUpdating) return;
-            isUpdating = true;
-            let btg = parseFloat(val);
-            if (isNaN(btg) || btg < 0) btg = 0;
-            let totalPotong = btg * POTONGAN_PER_BATANG;
-            let pack = totalPotong / KETUL_PER_PACK;
-            packInput.value = (Math.round(pack * 10) / 10).toFixed(1);
-            potongInput.value = (Math.round(totalPotong * 10) / 10).toFixed(1);
-            isUpdating = false;
-            kiraKosDanUntung();
-        }
+// ===================== NUMBER FIX =====================
+function toNum(x){
+    if(!x) return 0;
 
-        function updateFromPack(val) {
-            if (isUpdating) return;
-            isUpdating = true;
-            let p = parseFloat(val);
-            if (isNaN(p) || p < 0) p = 0;
-            let totalKetul = p * KETUL_PER_PACK;
-            let btg = totalKetul / POTONGAN_PER_BATANG;
-            batangInput.value = (Math.round(btg * 10) / 10).toFixed(1);
-            potongInput.value = (Math.round(totalKetul * 10) / 10).toFixed(1);
-            isUpdating = false;
-            kiraKosDanUntung();
-        }
+    x = x.toString().trim();
 
-        function updateFromPotong(val) {
-            if (isUpdating) return;
-            isUpdating = true;
-            let ptg = parseFloat(val);
-            if (isNaN(ptg) || ptg < 0) ptg = 0;
-            let btg = ptg / POTONGAN_PER_BATANG;
-            let p = ptg / KETUL_PER_PACK;
-            batangInput.value = (Math.round(btg * 10) / 10).toFixed(1);
-            packInput.value = (Math.round(p * 10) / 10).toFixed(1);
-            isUpdating = false;
-            kiraKosDanUntung();
-        }
+    x = x.replace(/[–−]/g,'-');
 
-        function kiraKosDanUntung() {
-            const packValue = parseFloat(packInput.value) || 0;
-            const ratio = packValue / BASE_PACK;
+    let isNeg = false;
+    if(x.endsWith('-')){
+        isNeg = true;
+        x = x.slice(0,-1);
+    }
 
-            // Kira kuantiti berdasarkan ratio
-            const qtySusuVal = BASE_SUSU * ratio;
-            const qtyMushroomVal = BASE_MUSHROOM * ratio;
-            const qtyButterVal = BASE_BUTTER * ratio;
-            const qtyGarlicVal = BASE_GARLIC * ratio;
-            const qtyCupVal = BASE_CUP * ratio;
-            const qtyBawangVal = BASE_BAWANG * ratio;
-            const qtyRotiVal = parseFloat(batangInput.value) || 0;
+    x = x.replace(/,/g,'').trim();
 
-            // Update display kuantiti
-            qtySusu.textContent = 'x' + qtySusuVal.toFixed(1);
-            qtyMushroom.textContent = 'x' + qtyMushroomVal.toFixed(1);
-            qtyButter.textContent = 'x' + qtyButterVal.toFixed(1);
-            qtyGarlic.textContent = 'x' + qtyGarlicVal.toFixed(1);
-            qtyCup.textContent = 'x' + qtyCupVal.toFixed(1);
-            qtyBawang.textContent = 'x' + qtyBawangVal.toFixed(1);
-            qtyRoti.textContent = 'x' + qtyRotiVal.toFixed(1);
+    let num = parseFloat(x) || 0;
 
-            // Baca harga
-            const hJualan = parseFloat(hargaJualan.value) || 0;
-            const hSusu = parseFloat(hargaSusu.value) || 0;
-            const hMushroom = parseFloat(hargaMushroom.value) || 0;
-            const hButter = parseFloat(hargaButter.value) || 0;
-            const hGarlic = parseFloat(hargaGarlic.value) || 0;
-            const hCup = parseFloat(hargaCup.value) || 0;
-            const hBawang = parseFloat(hargaBawang.value) || 0;
-            const hRoti = parseFloat(hargaRoti.value) || 0;
+    return isNeg ? -num : num;
+}
 
-            // Kira kos
-            const kosSusu = hSusu * qtySusuVal;
-            const kosMushroom = hMushroom * qtyMushroomVal;
-            const kosButter = hButter * qtyButterVal;
-            const kosGarlic = hGarlic * qtyGarlicVal;
-            const kosCup = hCup * qtyCupVal;
-            const kosBawang = hBawang * qtyBawangVal;
-            const kosRoti = hRoti * qtyRotiVal;
+// ===================== FORMAT =====================
+function fmt(n){
+    return Number(n || 0).toFixed(2);
+}
 
-            const totalKos = kosSusu + kosMushroom + kosButter + kosGarlic + kosCup + kosBawang + kosRoti;
-            const hasilJualan = packValue * hJualan;
-            const untungRugi = hasilJualan - totalKos;
+function fmtInt(n){
+    return Math.round(Number(n || 0));
+}
 
-            totalKosEl.textContent = 'RM ' + totalKos.toFixed(2);
-            hasilJualanEl.textContent = 'RM ' + hasilJualan.toFixed(2);
-            untungRugiEl.textContent = 'RM ' + untungRugi.toFixed(2);
-
-            if (untungRugi >= 0) {
-                untungRugiEl.className = 'angka keuntungan';
-            } else {
-                untungRugiEl.className = 'angka rugi';
+// ===================== DETECT FORMAT =====================
+function detectFormat(text) {
+    const lines = text.split(/\r?\n/);
+    
+    // Cari Report Code dalam header
+    for(let line of lines){
+        if(line.includes("Report Code")){
+            if(line.includes("RA4A")) {
+                detectedFormat = "RA4A";
+                return 'format_without_qty';
+            }
+            if(line.includes("RA04")) {
+                detectedFormat = "RA04";
+                return 'format_with_qty';
             }
         }
+    }
+    
+    // Jika tiada Report Code, guna kaedah bilangan angka
+    for(let line of lines){
+        line = line.trim();
+        if(!line) continue;
+        
+        let s = line.match(/^(Outright|Outrgt|Csgnmnt)\s*:?\s*(.*)$/i);
+        if(s){
+            let nums = s[2].split(/\s+/).map(toNum);
+            
+            if(nums.length >= 12) {
+                detectedFormat = "RA04";
+                return 'format_with_qty';
+            }
+            if(nums.length >= 9) {
+                detectedFormat = "RA4A";
+                return 'format_without_qty';
+            }
+        }
+    }
+    
+    detectedFormat = "RA04";
+    return 'format_with_qty';
+}
 
-        // Event listeners utama
-        batangInput.addEventListener('input', function(e) {
-            if (e.target.value === '' || e.target.value === '-') return;
-            updateFromBatang(e.target.value);
-        });
+// ===================== PARSE =====================
+function parse(text){
 
-        packInput.addEventListener('input', function(e) {
-            if (e.target.value === '' || e.target.value === '-') return;
-            updateFromPack(e.target.value);
-        });
+    const lines = text.split(/\r?\n/);
+    data = [];
 
-        potongInput.addEventListener('input', function(e) {
-            if (e.target.value === '' || e.target.value === '-') return;
-            updateFromPotong(e.target.value);
-        });
+    // DETECT FORMAT ONCE
+    const format = detectFormat(text);
+    console.log("Detected format:", format, "Report Code:", detectedFormat);
 
-        // Event listeners kos & harga jualan
-        const allCostInputs = [hargaJualan, hargaSusu, hargaMushroom, hargaButter, hargaGarlic, hargaCup, hargaBawang, hargaRoti];
-        allCostInputs.forEach(inp => {
-            inp.addEventListener('input', kiraKosDanUntung);
-            inp.addEventListener('change', kiraKosDanUntung);
-        });
+    let ctx = {};
+    let seen = new Set();
+    let pendingTotal = null;
 
-        // Reset
-        document.getElementById('resetBtn').addEventListener('click', function() {
-            isUpdating = true;
-            batangInput.value = '68';
-            packInput.value = '40.0';
-            potongInput.value = '200.0';
-            isUpdating = false;
-            hargaJualan.value = '4.50';
-            hargaSusu.value = '6.00';
-            hargaMushroom.value = '5.00';
-            hargaButter.value = '6.00';
-            hargaGarlic.value = '1.25';
-            hargaCup.value = '0.50';
-            hargaBawang.value = '1.00';
-            hargaRoti.value = '0.33';
-            kiraKosDanUntung();
-        });
+    for(let line of lines){
 
-        // Handle empty / negatif
-        const allNumberInputs = [batangInput, packInput, potongInput, ...allCostInputs];
-        allNumberInputs.forEach(inp => {
-            inp.addEventListener('blur', function() {
-                if (this.value === '' || this.value === '-') {
-                    this.value = '0';
-                    this.dispatchEvent(new Event('input'));
-                }
+        line = line.replace(/\f/g,'').trim();
+        if(!line) continue;
+
+        if(line.includes("PAGE") || line.includes("Report Code")) continue;
+
+        // TOTAL header detect
+        if(
+            line.toUpperCase().includes("TOTAL") &&
+            !line.match(/^(Outright|Outrgt|Csgnmnt)\s*:?/i)
+        ){
+            pendingTotal = line;
+            continue;
+        }
+
+        // TOTAL values (support both Outright/Outrgt)
+        let totalMatch = line.match(/^(Outright|Outrgt|Csgnmnt)\s*:?\s*(.*)$/i);
+        if(pendingTotal && totalMatch){
+
+            let nums = totalMatch[2].split(/\s+/).map(toNum);
+
+            // ==== HANDLE TOTAL ROW BASED ON FORMAT ====
+            let values = [];
+            if(format === 'format_with_qty') {
+                // Format 1: 12 angka (Qty,Cost,Retail,MO% x3)
+                values = nums;
+            } else {
+                // Format 2: 9 angka (Cost,Retail,MO% x3) → expand to 12
+                values = [
+                    0, nums[0], nums[1], nums[2],  // ACT: Qty=0
+                    0, nums[3], nums[4], nums[5],  // RI: Qty=0
+                    0, nums[6], nums[7], nums[8]   // VAR: Qty=0
+                ];
+            }
+
+            data.push({
+                totalRow: true,
+                dept: ctx.dept || "",
+                department: ctx.department || "",
+                totalText: pendingTotal,
+                type: totalMatch[1],
+                values: values
             });
-            inp.addEventListener('change', function() {
-                let v = parseFloat(this.value);
-                if (isNaN(v) || v < 0) {
-                    this.value = '0';
-                    this.dispatchEvent(new Event('input'));
-                }
-            });
-        });
 
-        // Init
-        batangInput.value = '68';
-        packInput.value = '40.0';
-        potongInput.value = '200.0';
-        hargaJualan.value = '4.50';
-        hargaSusu.value = '6.00';
-        hargaMushroom.value = '5.00';
-        hargaButter.value = '6.00';
-        hargaGarlic.value = '1.25';
-        hargaCup.value = '0.50';
-        hargaBawang.value = '1.00';
-        hargaRoti.value = '0.33';
-        kiraKosDanUntung();
+            pendingTotal = null;
+            continue;
+        }
 
-        console.log('🧮 Kalkulator roti + kos (dengan garlic!) sedia!');
-    })();
+        // PRODUCT HEADER
+        let p = line.match(/^(\d+)\s+(.+?)\s+(\d+)\s+(.+)$/);
+        if(p){
+            let parts = p[2].split(/\s{2,}/);
+
+            ctx = {
+                dept: p[1],
+                department: parts[0] || "",
+                brand: parts[1] || "",
+                sku: p[3],
+                description: p[4]
+            };
+            continue;
+        }
+
+        // STOCK LINE (support both Outright/Outrgt)
+        let s = line.match(/^(Outright|Outrgt|Csgnmnt)\s*:?\s*(.*)$/i);
+        if(s){
+
+            let nums = s[2].split(/\s+/).map(toNum);
+
+            let row = { ...ctx, type: s[1] };
+
+            // ==== HANDLE DATA ROW BASED ON FORMAT ====
+            if(format === 'format_with_qty') {
+                // Format 1: 12 angka (Qty,Cost,Retail,MO% x3)
+                row.act_qty = nums[0];
+                row.act_cost = nums[1];
+                row.act_retail = nums[2];
+                row.act_mo = nums[3];
+                
+                row.ri_qty = nums[4];
+                row.ri_cost = nums[5];
+                row.ri_retail = nums[6];
+                row.ri_mo = nums[7];
+                
+                row.var_qty = nums[8];
+                row.var_cost = nums[9];
+                row.var_retail = nums[10];
+                row.var_mo = nums[11];
+            } else {
+                // Format 2: 9 angka (Cost,Retail,MO% x3)
+                row.act_qty = 0;
+                row.act_cost = nums[0];
+                row.act_retail = nums[1];
+                row.act_mo = nums[2];
+                
+                row.ri_qty = 0;
+                row.ri_cost = nums[3];
+                row.ri_retail = nums[4];
+                row.ri_mo = nums[5];
+                
+                row.var_qty = 0;
+                row.var_cost = nums[6];
+                row.var_retail = nums[7];
+                row.var_mo = nums[8];
+            }
+
+            let key = clean(row.dept + row.brand + row.sku + row.type);
+            row.dup = seen.has(key);
+            seen.add(key);
+
+            data.push(row);
+        }
+    }
+
+    render();
+}
+
+// ===================== TOTAL ROW HANDLER =====================
+function isBrandTotal(r){
+    const txt = (r.totalText || "").toUpperCase();
+    if(!txt.includes("TOTAL")) return false;
+
+    const nonBrandKeywords = ["DEPARTMENT","STORE","COMPANY","DIVISION","OTHER"];
+    for(const kw of nonBrandKeywords){
+        if(txt.includes(kw)) return false;
+    }
+
+    return true;
+}
+
+// ===================== RENDER =====================
+function render() {
+    const tb = document.getElementById("tbody");
+    tb.innerHTML = "";
+
+    const filter = document.getElementById("typeFilter").value;
+    const frag = document.createDocumentFragment();
+
+    data.forEach(r => {
+
+        if(!r.totalRow){
+            if(filter==="outright" && r.type!=="Outright" && r.type!=="Outrgt") return;
+            if(filter==="csgnmnt" && r.type!=="Csgnmnt") return;
+        }
+
+        const tr = document.createElement("tr");
+
+        if(r.totalRow){
+            tr.classList.add("total-row");
+
+            const brandTotal = isBrandTotal(r);
+            let displayValues = [];
+
+            if(brandTotal){
+                displayValues = (r.values || []).map(v => fmt(v));
+            } else {
+                displayValues.push("NA");
+                displayValues.push(fmt(r.values?.[0]));
+                displayValues.push(fmt(r.values?.[1]));
+                displayValues.push(fmt(r.values?.[2]));
+
+                displayValues.push("NA");
+                displayValues.push(fmt(r.values?.[3]));
+                displayValues.push(fmt(r.values?.[4]));
+                displayValues.push(fmt(r.values?.[5]));
+
+                displayValues.push("NA");
+                displayValues.push(fmt(r.values?.[6]));
+                displayValues.push(fmt(r.values?.[7]));
+                displayValues.push(fmt(r.values?.[8]));
+            }
+
+            tr.innerHTML = `
+                <td colspan="6">${r.totalText} (${r.type})</td>
+                ${displayValues.map(v => `<td>${v}</td>`).join("")}
+            `;
+            frag.appendChild(tr);
+            return;
+        }
+
+        // NORMAL ROW
+        if(r.dup) tr.classList.add("duplicate");
+
+        tr.innerHTML = `
+            <td>${r.dept}</td>
+            <td>${r.department}</td>
+            <td>${r.brand}</td>
+            <td>${r.sku}</td>
+            <td>${r.description}</td>
+            <td>${r.type}</td>
+
+            <td>${fmtInt(r.act_qty)}</td>
+            <td>${fmt(r.act_cost)}</td>
+            <td>${fmt(r.act_retail)}</td>
+            <td>${fmt(r.act_mo)}</td>
+
+            <td>${fmtInt(r.ri_qty)}</td>
+            <td>${fmt(r.ri_cost)}</td>
+            <td>${fmt(r.ri_retail)}</td>
+            <td>${fmt(r.ri_mo)}</td>
+
+            <td class="${Number(r.var_qty)<0?'neg':'pos'}">${Number(r.var_qty)===0?'-':fmtInt(r.var_qty)}</td>
+            <td class="${Number(r.var_cost)<0?'neg':'pos'}">${Number(r.var_cost)===0?'-':fmt(r.var_cost)}</td>
+            <td class="${Number(r.var_retail)<0?'neg':'pos'}">${Number(r.var_retail)===0?'-':fmt(r.var_retail)}</td>
+            <td class="${Number(r.var_mo)<0?'neg':'pos'}">${Number(r.var_mo)===0?'-':fmt(r.var_mo)}</td>
+        `;
+        frag.appendChild(tr);
+    });
+
+    tb.appendChild(frag);
+}
+
+// ===================== STYLING =====================
+function applyStyles(ws, rows, isSummary=false){
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for(let R=0; R<=range.e.r; ++R){
+        for(let C=0; C<=range.e.c; ++C){
+            const cell_address = {c:C, r:R};
+            const cell_ref = XLSX.utils.encode_cell(cell_address);
+            const cell = ws[cell_ref];
+            if(!cell) continue;
+
+            ws['!cols'] = ws['!cols'] || [];
+            ws['!cols'][C] = {wch: Math.max(ws['!cols'][C]?.wch||10, String(cell.v||"").length + 2)};
+
+            cell.s = cell.s || {};
+            cell.s.border = {
+                top: {style:'thin', color:{auto:1}},
+                bottom: {style:'thin', color:{auto:1}},
+                left: {style:'thin', color:{auto:1}},
+                right: {style:'thin', color:{auto:1}}
+            };
+
+            if(!isSummary && R>0 && String(cell.v).toUpperCase().includes("TOTAL")){
+                cell.s.font = {bold:true};
+            }
+        }
+    }
+}
+
+// ===================== EXPORT =====================
+function exportExcel() {
+
+    const wb = XLSX.utils.book_new();
+
+    const headers = [
+        "dept","department","brand","sku","description","type",
+        "act_qty","act_cost","act_retail","act_mo",
+        "ri_qty","ri_cost","ri_retail","ri_mo",
+        "var_qty","var_cost","var_retail","var_mo"
+    ];
+
+    const filter = document.getElementById("typeFilter").value;
+
+    const filteredData = data.filter(r => {
+        if (r.totalRow) return true;
+
+        if (filter === "both") return true;
+        if (filter === "outright") return r.type === "Outright" || r.type === "Outrgt";
+        if (filter === "csgnmnt") return r.type === "Csgnmnt";
+
+        return true;
+    });
+
+    const allRows = filteredData.map(r => {
+
+        if (!r.totalRow) return r;
+
+        const brandTotal = isBrandTotal(r);
+
+        if (brandTotal) {
+            return {
+                dept: r.dept || "",
+                department: r.department || "",
+                brand: r.brand || "",
+                sku: r.sku || "",
+                description: r.totalText || "",
+                type: r.type,
+
+                act_qty: r.values?.[0] || 0,
+                act_cost: r.values?.[1] || 0,
+                act_retail: r.values?.[2] || 0,
+                act_mo: r.values?.[3] || 0,
+
+                ri_qty: r.values?.[4] || 0,
+                ri_cost: r.values?.[5] || 0,
+                ri_retail: r.values?.[6] || 0,
+                ri_mo: r.values?.[7] || 0,
+
+                var_qty: r.values?.[8] || 0,
+                var_cost: r.values?.[9] || 0,
+                var_retail: r.values?.[10] || 0,
+                var_mo: r.values?.[11] || 0
+            };
+        } else {
+            return {
+                dept: r.dept || "",
+                department: r.department || "",
+                brand: r.brand || "",
+                sku: r.sku || "",
+                description: r.totalText || "",
+                type: r.type,
+
+                act_qty: 0,
+                act_cost: r.values?.[0] || 0,
+                act_retail: r.values?.[1] || 0,
+                act_mo: r.values?.[2] || 0,
+
+                ri_qty: 0,
+                ri_cost: r.values?.[3] || 0,
+                ri_retail: r.values?.[4] || 0,
+                ri_mo: r.values?.[5] || 0,
+
+                var_qty: 0,
+                var_cost: r.values?.[6] || 0,
+                var_retail: r.values?.[7] || 0,
+                var_mo: r.values?.[8] || 0
+            };
+        }
+    });
+
+    // ============================================
+    // GUNAKAN detectedFormat UNTUK NAMA TAB
+    // ============================================
+    const tabPrefix = detectedFormat; // "RA04" atau "RA4A"
+
+    // ALL DATA SHEET
+    const wsAll = XLSX.utils.json_to_sheet(allRows, { header: headers });
+    applyStyles(wsAll, allRows);
+    XLSX.utils.book_append_sheet(wb, wsAll, `${tabPrefix}_ALL_DATA`);
+
+    // VARIANCE SHEET
+    const varRows = allRows
+        .filter(r => r.var_qty !== 0 || r.var_cost !== 0 || r.var_retail !== 0 || r.var_mo !== 0)
+        .map(r => ({
+            dept: r.dept,
+            department: r.department,
+            brand: r.brand,
+            sku: r.sku,
+            description: r.description,
+            type: r.type,
+            var_qty: r.var_qty,
+            var_cost: r.var_cost,
+            var_retail: r.var_retail,
+            var_mo: r.var_mo
+        }));
+
+    const wsVar = XLSX.utils.json_to_sheet(varRows, {
+        header: ["dept","department","brand","sku","description","type","var_qty","var_cost","var_retail","var_mo"]
+    });
+
+    applyStyles(wsVar, varRows, true);
+    XLSX.utils.book_append_sheet(wb, wsVar, `${tabPrefix}_VARIANCE`);
+
+    // SUMMARY SHEET
+    const summaryMap = {};
+
+    allRows.forEach(r => {
+        const key = `${r.dept} - ${r.department}`;
+
+        if (!summaryMap[key]) {
+            summaryMap[key] = {
+                dept: r.dept,
+                department: r.department,
+                act_qty: 0,
+                act_cost: 0,
+                ri_qty: 0,
+                ri_cost: 0,
+                var_qty: 0,
+                var_cost: 0
+            };
+        }
+
+        summaryMap[key].act_qty += r.act_qty || 0;
+        summaryMap[key].act_cost += r.act_cost || 0;
+        summaryMap[key].ri_qty += r.ri_qty || 0;
+        summaryMap[key].ri_cost += r.ri_cost || 0;
+        summaryMap[key].var_qty += r.var_qty || 0;
+        summaryMap[key].var_cost += r.var_cost || 0;
+    });
+
+    const summaryRows = Object.values(summaryMap);
+
+    const wsSummary = XLSX.utils.json_to_sheet(summaryRows, {
+        header: ["dept","department","act_qty","act_cost","ri_qty","ri_cost","var_qty","var_cost"]
+    });
+
+    applyStyles(wsSummary, summaryRows, true);
+    XLSX.utils.book_append_sheet(wb, wsSummary, `${tabPrefix}_SUMMARY`);
+
+    // SHEET BY DEPT
+    const deptMap = {};
+
+    allRows.forEach(r => {
+        const key = `${r.dept || "NO"} - ${r.department || "NAME"}`;
+
+        if (!deptMap[key]) deptMap[key] = [];
+        deptMap[key].push(r);
+    });
+
+    Object.entries(deptMap).forEach(([name, rows]) => {
+
+        const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
+
+        applyStyles(ws, rows, true);
+
+        const safeName = `${tabPrefix}_${name.substring(0, 27)}`;
+
+        XLSX.utils.book_append_sheet(wb, ws, safeName);
+    });
+
+    const today = new Date().toISOString().slice(0,10);
+    const exportName = `${fileName}_${detectedFormat}_${today}.xlsx`;
+
+    XLSX.writeFile(wb, exportName);
+}
+
 </script>
-
 </body>
 </html>
